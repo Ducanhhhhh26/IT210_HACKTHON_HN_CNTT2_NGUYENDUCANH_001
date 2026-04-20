@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head(~{::title})}">
+    <title>Thêm Sách mới</title>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container">
+        <h2>Thêm Sách mới</h2>
+
+        <form th:action="@{/books/add}" th:object="${book}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Tên sách (Title):</label>
+                <input type="text" id="title" th:field="*{title}" />
+                <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</span>
+            </div>
+
+            <div class="form-group">
+                <label for="author">Tác giả (Author):</label>
+                <input type="text" id="author" th:field="*{author}" />
+                <span class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Author Error</span>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Số lượng (Quantity):</label>
+                <input type="number" id="quantity" th:field="*{quantity}" />
+                <span class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">Quantity Error</span>
+            </div>
+
+            <div class="form-group">
+                <label for="imageFile">Ảnh bìa (Cover Image):</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/*" />
+            </div>
+
+            <button type="submit" class="btn">Thêm mới</button>
+            <a th:href="@{/books}" class="btn btn-cancel">Hủy</a>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
