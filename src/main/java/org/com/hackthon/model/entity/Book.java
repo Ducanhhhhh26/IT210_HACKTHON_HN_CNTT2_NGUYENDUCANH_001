@@ -9,13 +9,6 @@ public class Book {
         this.author = author;
     }
 
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
-    }
 
     public Long getId() {
         return id;
@@ -42,9 +35,8 @@ public class Book {
     }
 
 
-   public Book (String author, String coverImage, Long id, Integer quantity, String title) {
+    public Book (String author, Long id, Integer quantity, String title) {
         this.author = author;
-        this.coverImage = coverImage;
         this.id = id;
         this.quantity = quantity;
         this.title = title;
@@ -65,6 +57,4 @@ public class Book {
     @jakarta.validation.constraints.NotNull(message = "Số lượng không được để trống")
     @jakarta.validation.constraints.Positive(message = "Số lượng phải là số dương")
     private Integer quantity;
-
-    private String coverImage;
 }

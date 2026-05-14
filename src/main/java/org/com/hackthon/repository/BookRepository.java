@@ -14,8 +14,8 @@ public class BookRepository {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     public BookRepository() {
-        books.add(new Book("Robert_C.Martin", "clean_code.png", idGenerator.getAndIncrement(), 10, "Clean Code"));
-        books.add(new Book("Martin_Fowler", "refactoring.png", idGenerator.getAndIncrement(), 5, "Refactoring"));
+        books.add(new Book("Robert_C.Martin", idGenerator.getAndIncrement(), 10, "Clean Code"));
+        books.add(new Book("Martin_Fowler", idGenerator.getAndIncrement(), 5, "Refactoring"));
     }
 
     public List<Book> findAll() {
@@ -46,7 +46,6 @@ public class BookRepository {
                 existing.setTitle(book.getTitle());
                 existing.setAuthor(book.getAuthor());
                 existing.setQuantity(book.getQuantity());
-                existing.setCoverImage(book.getCoverImage());
             });
         }
     }

@@ -8,25 +8,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/books")
 public class BookController {
 
     private final BookService bookService;
-    private final ServletContext servletContext;
 
     @Autowired
-    public BookController(BookService bookService, ServletContext servletContext) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
-        this.servletContext = servletContext;
     }
 
     @GetMapping
@@ -48,13 +41,11 @@ public class BookController {
 
     @PostMapping("/add")
     public String addBook(@Valid @ModelAttribute("book") Book book, BindingResult result,
-                          @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                           Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "add";
         }
 
-        handleImageUpload(book, imageFile);
 
         bookService.save(book);
         redirectAttributes.addFlashAttribute("successMessage", "Thêm sách thành công!");
@@ -70,19 +61,12 @@ public class BookController {
 
     @PostMapping("/edit/{id}")
     public String updateBook(@PathVariable("id") Long id, @Valid @ModelAttribute("book") Book book, BindingResult result,
-                             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                              Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "edit";
         }
         book.setId(id);
 
-        Book existingBook = bookService.findById(id).orElse(null);
-        if (imageFile != null && !imageFile.isEmpty()) {
-            handleImageUpload(book, imageFile);
-        } else if (existingBook != null) {
-            book.setCoverImage(existingBook.getCoverImage());
-        }
 
         bookService.save(book);
         model.addAttribute("successMessage", "Cập nhật sách thành công!");
@@ -94,23 +78,5 @@ public class BookController {
         bookService.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Xóa sách thành công!");
         return "redirect:/books";
-    }
-
-    private void handleImageUpload(Book book, MultipartFile imageFile) {
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                String uploadDirPath = "C:/Users/OS/Desktop/IT210/HACKTHON/uploads/";
-                File uploadDir = new File(uploadDirPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
-                String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
-                File destFile = new File(uploadDir, fileName);
-                imageFile.transferTo(destFile);
-                book.setCoverImage("/uploads/" + fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
